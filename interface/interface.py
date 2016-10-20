@@ -11,7 +11,6 @@ import math
 def rotate(origin, point, angle):
 	ox, oy = origin
 	px, py = point
-
 	qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
 	qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
 	return qx, qy
@@ -20,7 +19,7 @@ def generate_cursor(c_size, c_orient, x0, y0):
 	robot_cursor = [(c_size, c_size), (0, int(c_size/2)), (c_size, 0), (int(c_size*2/3), int(c_size/2)), (c_size, c_size)]
 	cursor_rot = []	
 	for i in robot_cursor:
-		cursor_rot.append(rotate((int(c_size/2), int(c_size/2)),i,c_orient*math.pi/2))
+		cursor_rot.append(rotate((int(c_size/2), int(c_size/2)),i,-c_orient*math.pi/2))
 	cursor_fin = []
 	for i in range(0,len(robot_cursor)):
 		cursor_fin.append((cursor_rot[i][0] + x0, cursor_rot[i][1] + y0))
@@ -69,7 +68,7 @@ FPS = 10
 
 #GLOBAL PARAMETERS
 robot_status = 'Exploring'
-robot_orientation = 2
+robot_orientation = 0
 x_pos = 1
 y_pos = 0
 n_victims = 0
@@ -89,9 +88,11 @@ standard_font = pygame.font.Font(None, 40)
 big_font = pygame.font.Font(None, 50)
 
 def draw_robot(x0,y0, x, y, cell_size, orientation):
-	robot_pointlist = generate_cursor(cell_size, orientation, x0, y0)
+	cursor_size = cell_size * 2 / 3
+	robot_pointlist = generate_cursor(cursor_size, orientation, x0 +cell_size/2 - cursor_size/2, y0 + cell_size/2 - cursor_size/2)
 	#print (robot_pointlist)
-	pygame.draw.polygon(screen, light_blue, robot_pointlist)
+	pygame.gfxdraw.filled_polygon(screen, robot_pointlist, light_blue)
+	pygame.gfxdraw.aapolygon(screen, robot_pointlist, light_blue)
 
 def draw_cell(x0, y0, x, y, cell_size, walls, check):
 	wall_list = list(walls)
@@ -114,6 +115,7 @@ def draw_cell(x0, y0, x, y, cell_size, walls, check):
 	#Circles
 	if check>0:
 		pygame.gfxdraw.filled_circle(screen, int(x0 + x*cell_size + cell_size/2), int(y0 + y*cell_size + cell_size/2), int(cell_size/8),blue if check==1 else green)
+		pygame.gfxdraw.aacircle(screen, int(x0 + x*cell_size + cell_size/2), int(y0 + y*cell_size + cell_size/2), int(cell_size/8),blue if check==1 else green)
 
 def render_text(message, foreground_color, background_color, font=None):
 	if font is None:
