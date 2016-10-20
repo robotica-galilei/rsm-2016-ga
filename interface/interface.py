@@ -1,4 +1,6 @@
+from __future__ import division
 __author__ = 'Daniele Gottardini'
+
 
 import pygame
 from pygame import gfxdraw
@@ -18,17 +20,17 @@ blue = (0, 0, 255)
 
 #Settings
 MAX_T = 480
-screen_width = 400
+screen_width = 800
 screen_height = 480
 if screen_width < 200:
-	print "Screen too small"
+	print ("Screen too small")
 	pygame.quit()
 	sys.exit()
 margin = 20
 div_factor = 0.7
 if (1 - div_factor)*screen_width < 180:
 	div_factor=(screen_width-180)/screen_width
-	print div_factor
+	print (div_factor)
 divider = screen_width*div_factor
 info_offset = -20
 min_cell_size = 30 #pixels
@@ -86,8 +88,8 @@ def draw_cell(x0, y0, x, y, cell_size, walls, check):
 		pygame.gfxdraw.filled_circle(screen, int(x0 + x*cell_size + cell_size/2), int(y0 + y*cell_size + cell_size/2), int(cell_size/8),blue if check==1 else green)
 
 def render_text(message, foreground_color, background_color, font=None):
-        if font is None:
-            font = standard_font
+	if font is None:
+		font = standard_font
 	return font.render(message, True, foreground_color, background_color)
 
 while True:
@@ -121,7 +123,7 @@ while True:
 	label5 = render_text('Time', white, panel_color, big_font)
 	l5w, l5h = label5.get_size()
 	screen.blit(label5,((divider+screen_width)/2 - l5w/2, screen_height*5/7 -l5h/2))
-        elapsed_time = (pygame.time.get_ticks() - start_time)/1000
+	elapsed_time = (pygame.time.get_ticks() - start_time)/1000
 	elapsed_minutes, elapsed_seconds = divmod(elapsed_time, 60)
 	if elapsed_time < MAX_T -60:
 		timer_color = green
@@ -129,7 +131,7 @@ while True:
 		timer_color = orange
 	else:
 		timer_color = red	
-	label6 = render_text(str(elapsed_minutes) + ":" + str("%02d" % elapsed_seconds), timer_color, panel_color, big_font)
+	label6 = render_text(str(int(elapsed_minutes)) + ":" + str("%02d" % int(elapsed_seconds)), timer_color, panel_color, big_font)
 	l6w, l6h = label6.get_size()
 	screen.blit(label6,((divider+screen_width)/2 - l6w/2, screen_height*6/7 -l6h/2 + info_offset))
 	
@@ -151,7 +153,7 @@ while True:
 		screen.blit(label_error,(divider/2 - lew/2, screen_height/2 -leh/2))
 	else:
 		cell_size = min(cell_width, cell_height)
-		#print cell_size
+		#print (cell_size)
 		if cell_size > max_cell_size: cell_size = max_cell_size
 		map_width = cell_size * x_cells
 		map_height = cell_size * y_cells
