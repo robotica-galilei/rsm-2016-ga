@@ -16,7 +16,7 @@ def rotate(origin, point, angle):
 	return qx, qy
 
 def generate_cursor(c_size, c_orient, x0, y0):
-	robot_cursor = [(c_size, c_size), (0, int(c_size/2)), (c_size, 0), (int(c_size*2/3), int(c_size/2)), (c_size, c_size)]
+	robot_cursor = [(c_size, c_size), (0, int(c_size/2)), (c_size, 0), (int(c_size*3/4), int(c_size/2)), (c_size, c_size)]
 	cursor_rot = []	
 	for i in robot_cursor:
 		cursor_rot.append(rotate((int(c_size/2), int(c_size/2)),i,-c_orient*math.pi/2))
@@ -64,20 +64,20 @@ pygame.display.set_caption('Rescue Maze')
 pygame.mouse.set_visible(False)
 screen = pygame.display.set_mode((screen_width,screen_height))
 clock = pygame.time.Clock()
-FPS = 10
+FPS = 5
 
 #GLOBAL PARAMETERS
 robot_status = 'Exploring'
-robot_orientation = 0
+robot_orientation = 1
 x_pos = 1
-y_pos = 0
+y_pos = 1
 n_victims = 0
 start_time = pygame.time.get_ticks()
 x_cells=3
 y_cells=3
 wall_map = [['2202','0022','2000'],
 	['0012','1110','1000'],
-	['0000','0000','0000']]
+	['0000','0001','0000']]
 node_map = [[2,2,0],
 	[1,2,1],
 	[0,1,0]]
@@ -87,30 +87,48 @@ node_map = [[2,2,0],
 standard_font = pygame.font.Font(None, 40)
 big_font = pygame.font.Font(None, 50)
 
-def draw_robot(x0,y0, x, y, cell_size, orientation):
+def draw_robot(x0,y0, x_coord, y_coord, cell_size, orientation):
 	cursor_size = cell_size * 2 / 3
-	robot_pointlist = generate_cursor(cursor_size, orientation, x0 +cell_size/2 - cursor_size/2, y0 + cell_size/2 - cursor_size/2)
+	robot_pointlist = generate_cursor(cursor_size, orientation, x0 + x_coord*cell_size + cell_size/2 - cursor_size/2, y0 + y_coord*cell_size + cell_size/2 - cursor_size/2)
 	#print (robot_pointlist)
 	pygame.gfxdraw.filled_polygon(screen, robot_pointlist, light_blue)
 	pygame.gfxdraw.aapolygon(screen, robot_pointlist, light_blue)
+
+def draw_line(draw_surface, line_color, start_point, end_point, line_thickness, dashed=0):
+	if(dashed==0):
+		pygame.draw.line(draw_surface, line_color, start_point, end_point, line_thickness)
+	else:
+		if start_point[0]!=end_point[0] and start_point[1]!=end_point[1]:
+			print ("Can not draw oblique dashed lines")
+			return 0;
+		elif start_point[0]!=end_point[0]:
+			for i in range(start_point[0], end_point[0], 1):
+				if i % 8 == 0:
+					pygame.draw.line(draw_surface, line_color, (i, start_point[1]), (i+4, start_point[1]), line_thickness)
+		else:
+			for i in range(start_point[1], end_point[1], 1):
+				if i % 8 == 0:
+					pygame.draw.line(draw_surface, line_color, (start_point[0], i), (start_point[0], i+4), line_thickness)
 
 def draw_cell(x0, y0, x, y, cell_size, walls, check):
 	wall_list = list(walls)
 	wall_color = [grid_color, grid_color, grid_color, grid_color]
 	wall_thickness = [1,1,1,1]
+	wall_dashed = [0,0,0,0]
 	for i in range(0,4):
 		if wall_list[i]=='1':
 			wall_color[i]=blue
-			wall_thickness[i]=2
+			wall_dashed[i]=1
+			wall_thickness[i]=4
 		elif wall_list[i]=='2':
 			wall_color[i]=black
 			wall_thickness[i]=5
 
 	#Walls
-	pygame.draw.line(screen, wall_color[0], (x0 + x*cell_size, y0 + y*cell_size), (x0 + x*cell_size, y0 + (y+1)*cell_size), wall_thickness[0])
-	pygame.draw.line(screen, wall_color[1], (x0 + x*cell_size, y0 + (y+1)*cell_size), (x0 + (x+1)*cell_size, y0 + (y+1)*cell_size), wall_thickness[1])
-	pygame.draw.line(screen, wall_color[2], (x0+ (x+1)*cell_size, y0 + y*cell_size), (x0 + (x+1)*cell_size, y0 + (y+1)*cell_size), wall_thickness[2])
-	pygame.draw.line(screen, wall_color[3], (x0 + x*cell_size, y0 + y*cell_size), (x0 + (x+1)*cell_size, y0 + y*cell_size), wall_thickness[3])
+	draw_line(screen, wall_color[0], (int(x0 + x*cell_size), int(y0 + y*cell_size)), (int(x0 + x*cell_size), int(y0 + (y+1)*cell_size)), wall_thickness[0], wall_dashed[0])
+	draw_line(screen, wall_color[1], (int(x0 + x*cell_size), int(y0 + (y+1)*cell_size)), (int(x0 + (x+1)*cell_size), int(y0 + (y+1)*cell_size)), wall_thickness[1], wall_dashed[1])
+	draw_line(screen, wall_color[2], (int(x0+ (x+1)*cell_size), int(y0 + y*cell_size)), (int(x0 + (x+1)*cell_size), int(y0 + (y+1)*cell_size)), wall_thickness[2], wall_dashed[2])
+	draw_line(screen, wall_color[3], (int(x0 + x*cell_size), int(y0 + y*cell_size)), (int(x0 + (x+1)*cell_size), int(y0 + y*cell_size)), wall_thickness[3], wall_dashed[3])
 	
 	#Circles
 	if check>0:
@@ -193,7 +211,7 @@ while True:
 			for j in range(0,x_cells):
 				#Draw single cell
 				draw_cell(map_x_start, map_y_start, j, i, cell_size,wall_map[i][j],node_map[i][j])
-		draw_robot(map_x_start, map_y_start, j, i, cell_size, robot_orientation)
+		draw_robot(map_x_start, map_y_start, x_pos, y_pos, cell_size, robot_orientation)
 				
 		
 	#RENDER
