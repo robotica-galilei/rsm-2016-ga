@@ -20,7 +20,7 @@ blue = (0, 0, 255)
 light_blue = (102, 178, 255)
 
 #Settings
-screen_width = 400
+screen_width = 800
 screen_height = 480
 margin = 20
 div_factor = 0.7
@@ -45,7 +45,7 @@ def draw_layout(draw_surface, robot_status, n_victims, current_ticks, start_time
 	if (1 - div_factor)*screen_width < 180:
 		div_factor=(screen_width-180)/screen_width
 		divider = screen_width*div_factor
-		print (div_factor)	
+		#print (div_factor)	
 	
 	#base
 	draw_surface.fill(white)
