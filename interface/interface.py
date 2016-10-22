@@ -6,7 +6,6 @@ import math
 import robot
 import layout
 import mapper
-import random
 
 #Init
 pygame.init()
@@ -16,30 +15,32 @@ screen = pygame.display.set_mode((layout.screen_width,layout.screen_height)) #Ad
 clock = pygame.time.Clock()
 start_time = pygame.time.get_ticks() #Beginning match time 
 FPS = 5 #Refreshing rate of the screen 
-MAX_T = 480 #Match max time, default 480 seconds
+MAX_T = 480 #Match max duration, default 480 seconds
 
 ###Match parameters, changed real-time by the main program
+
 robot_status = 'Exploring' #Can be 'Exploring', 'Lost' or whatever you want
-robot_orientation = 1 #The orientation of the robot, integer number from 0 to 3
-x_pos = 1 ##Robot coords in the matrix
-y_pos = 1 ##
+robot_orientation = 2 #The orientation of the robot, integer number from 0 to 3
+x_pos = 2 ##Robot coords in the matrix
+y_pos = 2 ##
 n_victims = 0 #Useless, simply shows on the screen the number of victims found
-wall_map = [['2202','0022','2000','0000','0000','0000','0000','0000','0000','0000'], #THIS WILL BE CHANGED
-	['0012','1110','1000','0000','0000','0000','0000','0000','0000','0000'], #Matrix containing walls informations, 4 chars string, starting from the left, going anti-clockwise
-	['0000','0001','0000','0000','0000','0000','0000','0000','0000','0000'], #0 - unknown, 1 - No wall, 2 - Wall
-	['0000','0000','0000','0000','0000','0000','0000','0000','0000','0000'],
-	['0000','0000','0000','0000','0000','0000','0000','0000','0000','0000'],
+wall_map = [['3313','1133','3000','0000','0000','0000','0000','0000','0000','0000'], #THIS WILL BE CHANGED
+	['3133','3131','3000','0000','0000','0000','0000','0000','0000','0000'], #Matrix containing walls informations, 4 chars string, starting from the left, going anti-clockwise
+	['3111','1311','1323','2000','0000','0000','0000','0000','0000','0000'], #0 - unknown, 1 - No wall, 2 - Queued wall, 3 - Wall
+	['3331','3003','0003','0000','0000','0000','0000','0000','0000','0000'],
+	['0003','0000','0000','0000','0000','0000','0000','0000','0000','0000'],
 	['0000','0000','0000','0000','0000','0000','0000','0000','0000','0000'],
 	['0000','0000','0000','0000','0000','0000','0000','0000','0000','0000'],
 	['0000','0000','0000','0000','0000','0000','0000','0000','0000','0000']]
 node_map = [[2,2,0,0,0,0,0,0,0,0], #The exploration status of each cell,
-	[1,2,1,0,0,0,0,0,0,0], #0 - unknown, 1 - exists/queued, 2 - explored
-	[0,1,0,0,0,0,0,0,0,0],
-	[0,0,0,0,0,0,0,0,0,0],
+	[2,2,0,0,0,0,0,0,0,0], #0 - unknown, 1 - exists/queued, 2 - explored
+	[2,2,2,1,0,0,0,0,0,0],
+	[2,0,0,0,0,0,0,0,0,0],
 	[0,0,0,0,0,0,0,0,0,0],
 	[0,0,0,0,0,0,0,0,0,0],
 	[0,0,0,0,0,0,0,0,0,0],
 	[0,0,0,0,0,0,0,0,0,0]]
+
 ###End of match parameters
 
 while True:

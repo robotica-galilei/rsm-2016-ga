@@ -38,10 +38,13 @@ def draw_cell(draw_surface, x0, y0, x, y, cell_size, walls, check):
 	wall_dashed = [0,0,0,0]
 	for i in range(0,4):
 		if wall_list[i]=='1':
-			wall_color[i]=layout.blue
+			wall_color[i]=layout.white
+			wall_thickness[i]=1
+		if wall_list[i]=='2':
+			wall_color[i]=layout.black
 			wall_dashed[i]=1
 			wall_thickness[i]=4
-		elif wall_list[i]=='2':
+		elif wall_list[i]=='3':
 			wall_color[i]=layout.black
 			wall_thickness[i]=5
 
