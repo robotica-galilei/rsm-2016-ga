@@ -1,0 +1,16 @@
+### INSTALLATION PROCESS FOR PYRO4 AND PM2 ###
+
+Pyro4, using pip:
+
+pip install Pyro4
+
+
+Pm2, using npm:
+
+nmp install pm2 -g
+
+
+
+IMPORTANT: sometimes it is impossible to start pm2 after installation due to a misnaming error, simply run this command:
+
+ln -s /usr/bin/nodejs /usr/bin/node
