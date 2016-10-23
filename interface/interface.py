@@ -6,6 +6,10 @@ import math
 import robot
 import layout
 import mapper
+import Pyro4
+
+#Server connection
+server = Pyro4.Proxy("PYRONAME:robot.server")    # use name server object lookup uri shortcut
 
 #Init
 pygame.init()
@@ -44,6 +48,12 @@ node_map = [[2,2,0,0,0,0,0,0,0,0], #The exploration status of each cell,
 ###End of match parameters
 
 while True:
+
+	#Retrieve data from server
+	x_pos, y_pos = server.getRobotPosition()
+	robot_orientation = server.getRobotOrientation()
+		
+
 	#Checking for events (Escape key, X button)
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
