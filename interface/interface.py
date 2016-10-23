@@ -23,27 +23,14 @@ MAX_T = 480 #Match max duration, default 480 seconds
 
 ###Match parameters, changed real-time by the main program
 
-robot_status = 'Exploring' #Can be 'Exploring', 'Lost' or whatever you want
-robot_orientation = 2 #The orientation of the robot, integer number from 0 to 3
-x_pos = 2 ##Robot coords in the matrix
-y_pos = 2 ##
+robot_status = 'Default' #Can be 'Exploring', 'Lost' or whatever you want
+robot_orientation = 0 #The orientation of the robot, integer number from 0 to 3
+x_pos = 0 ##Robot coords in the matrix
+y_pos = 0 ##
 n_victims = 0 #Useless, simply shows on the screen the number of victims found
-wall_map = [['3313','1133','3000','0000','0000','0000','0000','0000','0000','0000'], #THIS WILL BE CHANGED
-	['3133','3131','3000','0000','0000','0000','0000','0000','0000','0000'], #Matrix containing walls informations, 4 chars string, starting from the left, going anti-clockwise
-	['3111','1311','1323','2000','0000','0000','0000','0000','0000','0000'], #0 - unknown, 1 - No wall, 2 - Queued wall, 3 - Wall
-	['3331','3003','0003','0000','0000','0000','0000','0000','0000','0000'],
-	['0003','0000','0000','0000','0000','0000','0000','0000','0000','0000'],
-	['0000','0000','0000','0000','0000','0000','0000','0000','0000','0000'],
-	['0000','0000','0000','0000','0000','0000','0000','0000','0000','0000'],
-	['0000','0000','0000','0000','0000','0000','0000','0000','0000','0000']]
-node_map = [[2,2,0,0,0,0,0,0,0,0], #The exploration status of each cell,
-	[2,2,0,0,0,0,0,0,0,0], #0 - unknown, 1 - exists/queued, 2 - explored
-	[2,2,2,1,0,0,0,0,0,0],
-	[2,0,0,0,0,0,0,0,0,0],
-	[0,0,0,0,0,0,0,0,0,0],
-	[0,0,0,0,0,0,0,0,0,0],
-	[0,0,0,0,0,0,0,0,0,0],
-	[0,0,0,0,0,0,0,0,0,0]]
+elapsed_time = 0
+wall_map = []
+node_map = []
 
 ###End of match parameters
 
@@ -52,7 +39,11 @@ while True:
 	#Retrieve data from server
 	x_pos, y_pos = server.getRobotPosition()
 	robot_orientation = server.getRobotOrientation()
-		
+	robot_status = server.getRobotStatus()
+	n_victims = server.getVictimsNumber()
+	elapsed_time = server.getElapsedTime()
+	wall_map = server.getWallMap()
+	node_map = server.getNodeMap()
 
 	#Checking for events (Escape key, X button)
 	for event in pygame.event.get():
@@ -61,7 +52,7 @@ while True:
 			sys.exit()
 
 	#Window layout
-	layout.draw_layout(screen, robot_status, n_victims, pygame.time.get_ticks(), start_time, MAX_T)
+	layout.draw_layout(screen, robot_status, n_victims, elapsed_time, MAX_T)
 
 	#The map
 	if(mapper.draw_map(screen, wall_map, node_map)==1):

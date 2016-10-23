@@ -32,7 +32,7 @@ def render_text(message, foreground_color, background_color, font=None):
 		font = standard_font
 	return font.render(message, True, foreground_color, background_color)
 
-def draw_layout(draw_surface, robot_status, n_victims, current_ticks, start_time, max_time):
+def draw_layout(draw_surface, robot_status, n_victims, elapsed_time, max_time):
 	global div_factor
 	global divider
 
@@ -56,7 +56,12 @@ def draw_layout(draw_surface, robot_status, n_victims, current_ticks, start_time
 	label1 = render_text('Status', white, panel_color, big_font)
 	l1w, l1h = label1.get_size()
 	draw_surface.blit(label1,((divider+screen_width)/2 - l1w/2, screen_height/7 -l1h/2))
-	label2 = render_text(robot_status, green if robot_status != 'Lost' else red, panel_color, standard_font)
+	status_color = green	
+	if robot_status == 'Lack of progress':
+		status_color = orange
+	elif robot_status == 'Lost':
+		status_color = red
+	label2 = render_text(robot_status, status_color, panel_color, standard_font)
 	l2w, l2h = label2.get_size()
 	draw_surface.blit(label2,((divider+screen_width)/2 - l2w/2, screen_height*2/7 -l2h/2 + info_offset))
 
@@ -72,7 +77,6 @@ def draw_layout(draw_surface, robot_status, n_victims, current_ticks, start_time
 	label5 = render_text('Time', white, panel_color, big_font)
 	l5w, l5h = label5.get_size()
 	draw_surface.blit(label5,((divider+screen_width)/2 - l5w/2, screen_height*5/7 -l5h/2))
-	elapsed_time = (current_ticks - start_time)/1000
 	elapsed_minutes, elapsed_seconds = divmod(elapsed_time, 60)
 	if elapsed_time < max_time -60:
 		timer_color = green
