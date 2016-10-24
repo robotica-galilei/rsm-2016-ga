@@ -15,69 +15,69 @@ node_map=[]
 
 @Pyro4.expose
 class server(object):
-	def ping(self):
-		return "Pong"
+    def ping(self):
+        return "Pong"
 
-	def getRobotPosition(self):
-		return (x_pos, y_pos)
+    def getRobotPosition(self):
+        return (x_pos, y_pos)
 
-	def setRobotPosition(self, coords):
-		global x_pos
-		global y_pos
-		if len(coords) < 2:
-			print coords
-			return -1
-		else:
-			x_pos, y_pos = coords
-			return 0
+    def setRobotPosition(self, coords):
+        global x_pos
+        global y_pos
+        if len(coords) < 2:
+            print coords
+            return -1
+        else:
+            x_pos, y_pos = coords
+            return 0
 
-	def getRobotOrientation(self):
-		return orientation
+    def getRobotOrientation(self):
+        return orientation
 
-	def setRobotOrientation(self, orient):
-		global orientation
-		orientation=orient
-		return 0
+    def setRobotOrientation(self, orient):
+        global orientation
+        orientation=orient
+        return 0
 
-	def getRobotStatus(self):
-		return robot_status
+    def getRobotStatus(self):
+        return robot_status
 
-	def setRobotStatus(self, status_string):
-		global robot_status
-		robot_status=status_string
-		return 0
+    def setRobotStatus(self, status_string):
+        global robot_status
+        robot_status=status_string
+        return 0
 
-	def getElapsedTime(self):
-		return elapsed_time
+    def getElapsedTime(self):
+        return elapsed_time
 
-	def setElapsedTime(self, e_time):
-		global elapsed_time
-		elapsed_time = e_time
-		return 0
+    def setElapsedTime(self, e_time):
+        global elapsed_time
+        elapsed_time = e_time
+        return 0
 
-	def getVictimsNumber(self):
-		return victims_number
+    def getVictimsNumber(self):
+        return victims_number
 
-	def setVictimsNumber(self, v_num):
-		global victims_number
-		victims_number=v_num
-		return 0
+    def setVictimsNumber(self, v_num):
+        global victims_number
+        victims_number=v_num
+        return 0
 
-	def getWallMap(self):
-		return wall_map
+    def getWallMap(self):
+        return wall_map
 
-	def setWallMap(self, w_map):
-		global wall_map
-		wall_map=w_map
-		return 0
+    def setWallMap(self, w_map):
+        global wall_map
+        wall_map=w_map
+        return 0
 
-	def getNodeMap(self):
-		return node_map
+    def getNodeMap(self):
+        return node_map
 
-	def setNodeMap(self, n_map):
-		global node_map
-		node_map=n_map
-		return 0
+    def setNodeMap(self, n_map):
+        global node_map
+        node_map=n_map
+        return 0
 
 daemon = Pyro4.Daemon()                # make a Pyro daemon
 ns = Pyro4.locateNS()                  # find the name server
